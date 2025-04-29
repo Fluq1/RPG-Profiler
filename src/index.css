@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=MedievalSharp&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background-light: rgba(255, 255, 255, 0.7);
+  --background-dark: rgba(28, 28, 30, 0.7);
+  --border-light: rgba(255, 255, 255, 0.2);
+  --border-dark: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  @apply bg-gradient-to-br from-rpg-primary to-rpg-secondary min-h-screen font-body text-rpg-light;
+  background-image: url('/background-texture.png'), linear-gradient(to bottom right, #2a2438, #352f44);
+  background-blend-mode: overlay;
+}
+
+@layer components {
+  .glass {
+    @apply bg-rpg-secondary/30 backdrop-blur-md border border-white/10 rounded-xl shadow-lg;
+  }
+  
+  .glass-light {
+    @apply bg-white/20 backdrop-blur-md border border-white/20 rounded-xl shadow-lg;
+  }
+  
+  .glass-dark {
+    @apply bg-rpg-primary/40 backdrop-blur-md border border-white/10 rounded-xl shadow-lg;
+  }
+  
+  .title-medieval {
+    @apply font-medieval text-3xl md:text-4xl lg:text-5xl text-rpg-gold;
+  }
+  
+  .title-fantasy {
+    @apply font-fantasy text-2xl md:text-3xl text-rpg-light;
+  }
+  
+  .btn-primary {
+    @apply glass px-6 py-3 font-fantasy text-rpg-light hover:bg-rpg-accent/40 transition-all duration-300 
+    border border-rpg-light/20 hover:border-rpg-light/40 shadow-md hover:shadow-lg;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer;
+  }
+  
+  .input-glass {
+    @apply glass px-4 py-2 bg-rpg-secondary/20 text-rpg-light placeholder-rpg-light/50 
+    focus:outline-none focus:ring-2 focus:ring-rpg-gold/50;
+  }
+}
