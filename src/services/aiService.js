@@ -26,7 +26,7 @@ const callGroqAPI = async (prompt) => {
         messages: [
           {
             role: "system",
-            content: "Você é um assistente que gera histórias detalhadas para personagens de RPG, Você deve usar estas informações para criar uma história breve de 20 linhas e no maximo 20 linhas nunca passar disso, Use Português Correto, Não cometa erros."
+            content: "Você é um assistente que gera histórias detalhadas para personagens de RPG, Você deve usar estas informações para criar uma história breve de 15 linhas e no maximo 15 linhas nunca passar disso, Use Português Correto e Comum , Não use palavras antiquadas, Não cometa erros."
           },
           {
             role: "user",
