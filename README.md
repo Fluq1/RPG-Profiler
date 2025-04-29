@@ -1,12 +1,23 @@
-# React + Vite
+# RPG Profiler - Gerador de Personagens para RPG
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Um sistema completo para criação e gerenciamento de personagens de RPG, desenvolvido como Trabalho de Conclusão de Curso (TCC) para a Faculdade.
 
-Currently, two official plugins are available:
+## ✨ Recursos Principais
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🧙‍♂️ Criação de personagens com arquétipos personalizados
+- 📖 Geração automática de histórias de fundo com IA
+- 🎭 Seleção de estágios de vida para desenvolvimento do personagem
+- 🖌️ Interface moderna e intuitiva
+- 🤖 Integração com API de IA para enriquecimento de conteúdo
 
-## Expanding the ESLint configuration
+## 🚀 Tecnologias Utilizadas
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend**: React.js, TailwindCSS, Framer Motion
+- **Backend**: Node.js
+- **IA**: GroqCloud API
+- **Banco de Dados**: TBD
+- **Autenticação**: TBD
+
+## 📚 Sobre o Projeto
+
+Este projeto foi desenvolvido como parte do Trabalho de Conclusão de Curso na Faculdade, com o objetivo de criar uma ferramenta completa para jogadores e mestres de RPG. O sistema permite a criação detalhada de personagens, com histórias ricas e personalizadas geradas por inteligência artificial.
