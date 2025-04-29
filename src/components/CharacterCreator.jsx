@@ -19,6 +19,7 @@ const CharacterCreator = () => {
   const [step, setStep] = useState(0); // Start with game system selection
   const [gameSystem, setGameSystem] = useState(null);
   const [selectedArchetype, setSelectedArchetype] = useState(null);
+  const [ageGroup, setAgeGroup] = useState(null); // Nova state para faixa etária
   const [characterDetails, setCharacterDetails] = useState(null);
   const [characterName, setCharacterName] = useState('');
   const [story, setStory] = useState('');
@@ -41,14 +42,14 @@ const CharacterCreator = () => {
 
   // When an archetype is selected, generate character details
   useEffect(() => {
-    if (selectedArchetype && step === 2) {
+    if (selectedArchetype && step === 3) {
       setLoading(true);
       setError('');
       
       generateCharacterDetails(selectedArchetype)
         .then(details => {
           setCharacterDetails(details);
-          setStep(3);
+          setStep(4);
         })
         .catch(err => {
           console.error('Error generating character details:', err);
@@ -66,6 +67,12 @@ const CharacterCreator = () => {
     setStep(1);
   };
 
+  // Handle age group selection
+  const handleAgeGroupSelect = (group) => {
+    setAgeGroup(group);
+    setStep(3);
+  };
+
   // Handle life stage selection
   const handleLifeStageSelect = (stage, option) => {
     setLifeStageSelections(prev => ({
@@ -79,11 +86,25 @@ const CharacterCreator = () => {
     const stages = Object.keys(lifeStages);
     const currentIndex = stages.indexOf(currentLifeStage);
     
-    if (currentIndex < stages.length - 1) {
+    // Limitar estágios com base na faixa etária
+    const maxStageIndex = getMaxStageIndex();
+    
+    if (currentIndex < maxStageIndex) {
       setCurrentLifeStage(stages[currentIndex + 1]);
     } else {
       // All life stages completed, generate story
       handleGenerateStory();
+    }
+  };
+
+  // Função auxiliar para obter o índice máximo de estágio com base na faixa etária
+  const getMaxStageIndex = () => {
+    if (ageGroup === 'child') {
+      return 2; // Até childhood (3 estágios)
+    } else if (ageGroup === 'young') {
+      return 4; // Até adolescence (5 estágios)
+    } else {
+      return Object.keys(lifeStages).length - 1; // Todos os estágios
     }
   };
 
@@ -96,7 +117,7 @@ const CharacterCreator = () => {
       setCurrentLifeStage(stages[currentIndex - 1]);
     } else {
       // Go back to character details
-      setStep(3);
+      setStep(4);
     }
   };
 
@@ -108,7 +129,7 @@ const CharacterCreator = () => {
     }
     
     setCurrentLifeStage('infancy');
-    setStep(4);
+    setStep(5);
   };
 
   // Generate story when all life stages are completed
@@ -121,6 +142,7 @@ const CharacterCreator = () => {
         name: characterName,
         gameSystem: gameSystem,
         archetype: selectedArchetype,
+        ageGroup: ageGroup,
         race: characterDetails.race,
         class: characterDetails.class,
         background: characterDetails.background,
@@ -129,7 +151,7 @@ const CharacterCreator = () => {
       
       const generatedStory = await generateCharacterStory(characterData);
       setStory(generatedStory);
-      setStep(5);
+      setStep(6);
     } catch (err) {
       console.error('Error generating story:', err);
       setError('Falha ao gerar história. Tente novamente.');
@@ -144,6 +166,7 @@ const CharacterCreator = () => {
       name: characterName,
       gameSystem: gameSystem,
       archetype: selectedArchetype,
+      ageGroup: ageGroup,
       race: characterDetails.race,
       class: characterDetails.class,
       background: characterDetails.background,
@@ -189,6 +212,81 @@ const CharacterCreator = () => {
           Continuar
         </Button>
       </div>
+    </>
+  );
+
+  // Render age group selection
+  const renderAgeGroupSelection = () => (
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="title-fantasy text-2xl mb-6 text-center">Escolha a Faixa Etária</h2>
+        
+        <GlassPanel className="mb-6 p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div 
+              className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
+                ageGroup === 'child' 
+                  ? 'bg-rpg-accent/30 border border-rpg-accent/50' 
+                  : 'bg-rpg-dark/30 border border-rpg-light/10 hover:bg-rpg-dark/50'
+              }`}
+              onClick={() => setAgeGroup('child')}
+            >
+              <h3 className="font-fantasy text-lg mb-1">Criança</h3>
+              <p className="text-sm text-rpg-light/80">Até 12 anos</p>
+              <p className="text-xs text-rpg-light/60 mt-2">Acesso às 3 primeiras etapas de vida</p>
+            </div>
+            
+            <div 
+              className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
+                ageGroup === 'young' 
+                  ? 'bg-rpg-accent/30 border border-rpg-accent/50' 
+                  : 'bg-rpg-dark/30 border border-rpg-light/10 hover:bg-rpg-dark/50'
+              }`}
+              onClick={() => setAgeGroup('young')}
+            >
+              <h3 className="font-fantasy text-lg mb-1">Jovem</h3>
+              <p className="text-sm text-rpg-light/80">Até 18 anos</p>
+              <p className="text-xs text-rpg-light/60 mt-2">Acesso até o fim da adolescência</p>
+            </div>
+            
+            <div 
+              className={`p-4 rounded-lg cursor-pointer transition-all duration-200 ${
+                ageGroup === 'adult' 
+                  ? 'bg-rpg-accent/30 border border-rpg-accent/50' 
+                  : 'bg-rpg-dark/30 border border-rpg-light/10 hover:bg-rpg-dark/50'
+              }`}
+              onClick={() => setAgeGroup('adult')}
+            >
+              <h3 className="font-fantasy text-lg mb-1">Adulto</h3>
+              <p className="text-sm text-rpg-light/80">26+ anos</p>
+              <p className="text-xs text-rpg-light/60 mt-2">Acesso a todas as etapas de vida</p>
+            </div>
+          </div>
+          
+          <div className="flex justify-between">
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                setSelectedArchetype(null);
+                setStep(1);
+              }}
+            >
+              Voltar
+            </Button>
+            <Button 
+              variant="primary" 
+              onClick={() => ageGroup && handleAgeGroupSelect(ageGroup)}
+              disabled={!ageGroup}
+            >
+              Continuar
+            </Button>
+          </div>
+        </GlassPanel>
+      </motion.div>
     </>
   );
 
@@ -238,9 +336,8 @@ const CharacterCreator = () => {
             <Button 
               variant="secondary" 
               onClick={() => {
-                setSelectedArchetype(null);
-                setCharacterDetails(null);
-                setStep(1);
+                setAgeGroup(null);
+                setStep(2);
               }}
             >
               Voltar
@@ -264,6 +361,12 @@ const CharacterCreator = () => {
     
     const stageData = lifeStages[currentLifeStage];
     const selectedOption = lifeStageSelections[currentLifeStage];
+    
+    // Verificar se é o último estágio disponível para a faixa etária
+    const stages = Object.keys(lifeStages);
+    const currentIndex = stages.indexOf(currentLifeStage);
+    const maxStageIndex = getMaxStageIndex();
+    const isLastStage = currentIndex === maxStageIndex;
     
     return (
       <motion.div
@@ -305,7 +408,7 @@ const CharacterCreator = () => {
               onClick={handleNextLifeStage}
               disabled={!selectedOption}
             >
-              {currentLifeStage === 'adulthood' ? 'Gerar História' : 'Próxima Etapa'}
+              {isLastStage ? 'Gerar História' : 'Próxima Etapa'}
             </Button>
           </div>
         </GlassPanel>
@@ -333,7 +436,12 @@ const CharacterCreator = () => {
           <div className="flex justify-between">
             <Button 
               variant="secondary" 
-              onClick={() => setCurrentLifeStage('adulthood')}
+              onClick={() => {
+                const stages = Object.keys(lifeStages);
+                const maxStageIndex = getMaxStageIndex();
+                setCurrentLifeStage(stages[maxStageIndex]);
+                setStep(5);
+              }}
             >
               Voltar
             </Button>
@@ -365,10 +473,11 @@ const CharacterCreator = () => {
         <>
           {step === 0 && renderGameSystemSelection()}
           {step === 1 && renderArchetypeSelection()}
-          {step === 2 && renderLoading()}
-          {step === 3 && renderCharacterDetails()}
-          {step === 4 && renderLifeStageSelection()}
-          {step === 5 && renderStory()}
+          {step === 2 && renderAgeGroupSelection()}
+          {step === 3 && renderLoading()}
+          {step === 4 && renderCharacterDetails()}
+          {step === 5 && renderLifeStageSelection()}
+          {step === 6 && renderStory()}
         </>
       )}
     </div>
