@@ -12,7 +12,7 @@ const Header = () => {
         transition={{ duration: 0.5 }}
       >
         <Link to="/" className="mb-4 md:mb-0">
-          <h1 className="title-medieval text-3xl">RPG Profiler</h1>
+          <h1 className="title-medieval text-3xl">Forged</h1>
         </Link>
         
         <nav className="flex space-x-6">

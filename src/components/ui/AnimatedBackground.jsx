@@ -193,21 +193,31 @@ const AnimatedBackground = () => {
       return new THREE.CanvasTexture(canvas);
     };
 
-    // Create eye sphere instead of inner circle
-    const eyeGeometry = new THREE.SphereGeometry(0.7, 32, 32);
+    // Create a plane with the eye texture instead of a sphere
+    const eyeGeometry = new THREE.PlaneGeometry(1.4, 1.4);
     const eyeMaterial = new THREE.MeshBasicMaterial({
       map: createEyeTexture(),
       transparent: true,
-      opacity: 0.9
+      opacity: 1.0,
+      side: THREE.FrontSide
     });
+    
+    // Use a group to properly orient the eye
+    const eyeGroup = new THREE.Group();
     const eye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+    
+    // Position the eye slightly forward
     eye.position.z = 0.1;
-    scene.add(eye);
+    
+    eyeGroup.add(eye);
+    eyeGroup.position.z = 0.1;
+    
+    scene.add(eyeGroup);
 
     // Remove the old inner circle
     scene.remove(innerCircle);
     magicGroup.remove(innerCircle);
-    magicGroup.add(eye);
+    magicGroup.add(eyeGroup);
 
     // Animation
     const animate = () => {
@@ -221,19 +231,25 @@ const AnimatedBackground = () => {
       magicGroup.position.x += (target.x - magicGroup.position.x) * 0.05;
       magicGroup.position.y += (target.y - magicGroup.position.y) * 0.05;
       
-      // Make the eye look at the mouse
-      eye.lookAt(new THREE.Vector3(
-        mouse.x * 5,
-        mouse.y * 5,
-        -1
-      ));
+      // Calculate subtle eye movement based on mouse position
+      const maxMovement = 0.1; // Reduced movement for subtle effect
+      const eyeMovementX = -mouse.x * maxMovement;
+      const eyeMovementY = -mouse.y * maxMovement;
+      
+      // Apply subtle movement to the eye
+      eye.position.x = eyeMovementX;
+      eye.position.y = eyeMovementY;
+      
+      // Add slight "breathing" movement to appear alive
+      eye.scale.x = 1 + Math.sin(Date.now() * 0.001) * 0.02;
+      eye.scale.y = 1 + Math.sin(Date.now() * 0.001) * 0.02;
       
       // Rotate elements for magical effect
       runeGroup.rotation.z += 0.005;
       
-      // Rotate based on mouse position for 3D effect
-      magicGroup.rotation.x = mouse.y * 0.4;
-      magicGroup.rotation.y = mouse.x * 0.3;
+      // Reduced 3D rotation effect
+      magicGroup.rotation.x = mouse.y * 0.1;  // Reduced from 0.2
+      magicGroup.rotation.y = mouse.x * 0.1;  // Reduced from 0.15
       
       // Render
       renderer.render(scene, camera);
