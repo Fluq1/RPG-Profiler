@@ -1,11 +1,10 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 const variants = {
-  primary: 'bg-rpg-accent text-rpg-dark hover:bg-rpg-accent/90',
-  secondary: 'bg-rpg-light/10 border border-rpg-light/20 hover:bg-rpg-light/20',
-  danger: 'bg-red-500/80 hover:bg-red-500',
-  icon: 'bg-transparent hover:bg-rpg-light/10 p-2',
+  primary: 'bg-rpg-accent text-white hover:bg-rpg-accent/90 hover:scale-105 hover:font-bold hover:shadow-lg hover:shadow-rpg-accent/30',
+  secondary: 'bg-rpg-dark border border-rpg-light/10 text-white hover:bg-rpg-accent hover:border-rpg-accent hover:scale-105 hover:font-bold hover:shadow-lg hover:shadow-rpg-accent/30',
+  danger: 'bg-red-500 text-white hover:bg-red-600 hover:scale-105 hover:font-bold hover:shadow-lg hover:shadow-red-500/30',
+  icon: 'bg-transparent hover:bg-rpg-accent/20 hover:scale-110 p-2',
 };
 
 const sizes = {
@@ -22,21 +21,19 @@ const Button = ({
   disabled = false,
   ...props
 }) => {
-  const baseClasses = 'rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-rpg-accent/50';
+  const baseClasses = 'rounded-lg font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#F97316]/50';
   const variantClasses = variants[variant] || variants.primary;
   const sizeClasses = variant === 'icon' ? 'p-2' : (sizes[size] || sizes.md);
-  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : '';
+  const disabledClasses = disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer';
 
   return (
-    <motion.button
+    <button
       className={`${baseClasses} ${variantClasses} ${sizeClasses} ${disabledClasses} ${className}`}
-      whileHover={!disabled ? { scale: 1.03 } : {}}
-      whileTap={!disabled ? { scale: 0.98 } : {}}
       disabled={disabled}
       {...props}
     >
       {children}
-    </motion.button>
+    </button>
   );
 };
 

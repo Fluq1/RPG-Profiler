@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { archetypes } from '../data/archetypes';
+import { rpgSystems } from '../data/rpgSystems';
 
 // API Key directly embedded
 const API_KEY = "AIzaSyD0RvqOFTObZS_wAzU_pEamHWRYxV4wpUM";
@@ -73,63 +74,89 @@ const callGeminiAPI = async (prompt) => {
   }
 };
 
-export const generateCharacterDetails = (archetype) => {
-  const suggestions = {
-    bruto: { race: 'Meio-Orc', class: 'Bárbaro', background: 'Soldado' },
-    sabio: { race: 'Elfo', class: 'Mago', background: 'Sábio' },
-    assassino: { race: 'Meio-Elfo', class: 'Ladino', background: 'Criminoso' },
-    guardiao: { race: 'Humano', class: 'Paladino', background: 'Acolito' },
-    artista: { race: 'Halfling', class: 'Bardo', background: 'Artista' }
+// Sugestões de personagem por arquétipo
+const CHARACTER_SUGGESTIONS = {
+  bruto: { race: 'Meio-Orc', class: 'Bárbaro', background: 'Soldado' },
+  sabio: { race: 'Elfo', class: 'Mago', background: 'Sábio' },
+  assassino: { race: 'Meio-Elfo', class: 'Ladino', background: 'Criminoso' },
+  guardiao: { race: 'Humano', class: 'Paladino', background: 'Acolito' },
+  artista: { race: 'Halfling', class: 'Bardo', background: 'Artista' }
+};
+
+export const generateCharacterDetails = (characterData) => {
+  // Handle both old archetype-only calls and new character data objects
+  const archetype = typeof characterData === 'string' ? characterData : characterData?.archetype;
+  
+  const suggestion = CHARACTER_SUGGESTIONS[archetype] || { race: 'Humano', class: 'Guerreiro', background: 'Soldado' };
+  
+  // Generate a random name based on race and class
+  const names = {
+    'Humano': ['Aiden', 'Elena', 'Marcus', 'Sofia', 'Gabriel', 'Isabella'],
+    'Elfo': ['Aelar', 'Aerdrie', 'Ahvak', 'Aramil', 'Berrian', 'Dayereth'],
+    'Anão': ['Adrik', 'Baern', 'Darrak', 'Eberk', 'Fargrim', 'Gardain'],
+    'Halfling': ['Alton', 'Ander', 'Bernie', 'Bobbin', 'Cade', 'Callus'],
+    'Meio-Orc': ['Dench', 'Feng', 'Gell', 'Henk', 'Holg', 'Imsh'],
+    'Meio-Elfo': ['Abel', 'Caleb', 'Dara', 'Enna', 'Galinndan', 'Hadarai']
   };
-  return Promise.resolve(suggestions[archetype] || { race: 'Humano', class: 'Guerreiro', background: 'Soldado' });
+  
+  const raceNames = names[suggestion.race] || names['Humano'];
+  const randomName = raceNames[Math.floor(Math.random() * raceNames.length)];
+  
+  return Promise.resolve({
+    ...suggestion,
+    name: randomName
+  });
 };
 
 export const getSuggestions = (archetype) => {
-  const suggestions = {
-    bruto: { race: 'Meio-Orc', class: 'Bárbaro', background: 'Soldado' },
-    sabio: { race: 'Elfo', class: 'Mago', background: 'Sábio' },
-    assassino: { race: 'Meio-Elfo', class: 'Ladino', background: 'Criminoso' },
-    guardiao: { race: 'Humano', class: 'Paladino', background: 'Acolito' },
-    artista: { race: 'Halfling', class: 'Bardo', background: 'Artista' }
-  };
-  return suggestions[archetype] || { race: 'Humano', class: 'Guerreiro', background: 'Soldado' };
+  return CHARACTER_SUGGESTIONS[archetype] || { race: 'Humano', class: 'Guerreiro', background: 'Soldado' };
+};
+
+// Prompts específicos por sistema
+const SYSTEM_PROMPTS = {
+  dnd: `Você é um mestre de RPG especializado em criar histórias envolventes para personagens de Dungeons & Dragons 5e...`,
+  pathfinder: `Você é um mestre de RPG especializado em criar histórias para personagens de Pathfinder...`,
+  callOfCthulhu: `Você é um Keeper de Call of Cthulhu especializado em criar investigadores com histórias sombrias...`,
+  vampireMasquerade: `Você é um Narrador de Vampire: The Masquerade especializado em criar personagens com histórias trágicas...`
+};
+
+// Função auxiliar para formatar eventos de vida
+const formatLifeEvents = (lifeStages) => {
+  if (!lifeStages) return 'Nenhum evento específico registrado.';
+  
+  const events = [];
+  Object.entries(lifeStages).forEach(([stage, selection]) => {
+    if (selection && selection.title) {
+      const stageTitle = stageTitles[stage] || stage;
+      events.push(`- ${stageTitle}: ${selection.title} - ${selection.description}`);
+    }
+  });
+  
+  return events.length > 0 ? events.join('\n') : 'Nenhum evento específico registrado.';
 };
 
 export const generateCharacterStory = async (character) => {
-  const lifeEvents = [];
+  // Selecionar prompt específico do sistema
+  const systemPrompt = SYSTEM_PROMPTS[character.gameSystem] || SYSTEM_PROMPTS.dnd;
+  
+  // Obter dados específicos do sistema
+  const systemData = rpgSystems[character.gameSystem];
+  
+  // Construir prompt com dados específicos do sistema
+  const enhancedPrompt = `${systemPrompt}
 
-  if (character.lifeStages) {
-    Object.entries(character.lifeStages).forEach(([stage, selection]) => {
-      if (selection) {
-        lifeEvents.push(`Durante sua ${stageTitles[stage] || stage}, ${selection.description}`);
-      }
-    });
-  }
-
-  const archetypeInfo = archetypes.find(a => a.id === character.archetype) ||
-                       { name: 'Aventureiro', description: 'Um viajante em busca de aventuras' };
-
-  const enhancedPrompt = `PERSONAGEM PARA HISTÓRIA D&D:
-
-INFORMAÇÕES BÁSICAS:
+INFORMAÇÕES DO PERSONAGEM:
 - Nome: ${character.name}
 - Raça: ${character.race}
-- Classe: ${character.class}
+- Classe/Arquétipo: ${character.class}
 - Background: ${character.background}
-- Arquétipo: ${archetypeInfo.name} - ${archetypeInfo.description}
+// Adicionar atributos específicos do sistema
+${systemData.characterPromptTemplate(character)}
 
 EVENTOS DA VIDA:
-${lifeEvents.length > 0 ? lifeEvents.join('\n') : 'Eventos de vida padrão baseados no background'}
+${formatLifeEvents(character.lifeStages)}
 
-INSTRUÇÕES ESPECÍFICAS:
-- Crie uma origem única que explique como ${character.name} desenvolveu suas habilidades de ${character.class}
-- Inclua pelo menos uma referência a elementos específicos do universo D&D (divindades, planos, magias, criaturas fantásticas)
-- Mencione uma falha ou medo pessoal que torne o personagem mais humano
-- Estabeleça um objetivo claro que motive o personagem a aventurar-se
-- Termine com um gancho que o mestre possa usar para conectar o personagem à campanha
-- Mantenha o tom heroico mas realista, próprio do D&D
-
-Crie uma história envolvente que faça este personagem ganhar vida na mesa de RPG!`;
+Crie uma história envolvente que faça este personagem ganhar vida!`;
 
   return await callGeminiAPI(enhancedPrompt);
 };

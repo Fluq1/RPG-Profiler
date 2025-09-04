@@ -1,16 +1,13 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 
 const Card = ({ children, onClick, className = '', selected = false }) => {
   return (
-    <motion.div
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.98 }}
+    <div
       onClick={onClick}
-      className={`glass p-4 card-hover ${selected ? 'ring-2 ring-rpg-gold' : ''} ${className}`}
+      className={`bg-[#2D2D2D] rounded-xl border ${selected ? 'border-[#F97316]' : 'border-[rgba(255,255,255,0.1)]'} shadow-lg transition-all duration-200 ${onClick ? 'cursor-pointer' : ''} ${className}`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
