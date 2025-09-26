@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Card from './ui/Card';
 import { gsap } from 'gsap';
-import { useEffect, useRef } from 'react';
 
 const archetypes = [
   {

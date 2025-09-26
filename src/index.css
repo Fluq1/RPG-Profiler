@@ -1,54 +1,143 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background-light: rgba(255, 255, 255, 0.7);
-  --background-dark: rgba(28, 28, 30, 0.7);
-  --border-light: rgba(255, 255, 255, 0.2);
-  --border-dark: rgba(255, 255, 255, 0.1);
+  --background: #1A1A1A;
+  --card-bg: #2D2D2D;
+  --text-primary: #FFFFFF;
+  --text-secondary: #A0A0A0;
+  --accent: #F97316;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+
+@font-face {
+  font-family: 'SF Display Pro';
+  src: url('/fonts/SF-Pro-Display-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SF Display Pro';
+  src: url('/fonts/SF-Pro-Display-Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
 }
 
 body {
-  @apply bg-gradient-to-br from-rpg-primary to-rpg-secondary min-h-screen font-body text-rpg-light;
-  background-image: url('/background-texture.png'), linear-gradient(to bottom right, #2a2438, #352f44);
-  background-blend-mode: overlay;
+  @apply min-h-screen;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--background);
+  color: var(--text-primary);
 }
 
 @layer components {
-  .glass {
-    @apply bg-rpg-secondary/30 backdrop-blur-md border border-white/10 rounded-xl shadow-lg;
-  }
-  
-  .glass-light {
-    @apply bg-white/20 backdrop-blur-md border border-white/20 rounded-xl shadow-lg;
-  }
-  
-  .glass-dark {
-    @apply bg-rpg-primary/40 backdrop-blur-md border border-white/10 rounded-xl shadow-lg;
+  .claude-card {
+    @apply bg-[#2D2D2D] rounded-xl border border-[rgba(255,255,255,0.1)] shadow-lg;
   }
   
   .title-medieval {
-    @apply font-medieval text-3xl md:text-4xl lg:text-5xl text-rpg-gold;
+    @apply font-medieval text-3xl md:text-4xl lg:text-5xl text-[#F97316];
   }
   
   .title-fantasy {
-    @apply font-fantasy text-2xl md:text-3xl text-rpg-light;
+    font-family: 'Inter', sans-serif;
+    @apply text-2xl md:text-3xl text-white;
   }
   
-  .btn-primary {
-    @apply glass px-6 py-3 font-fantasy text-rpg-light hover:bg-rpg-accent/40 transition-all duration-300 
-    border border-rpg-light/20 hover:border-rpg-light/40 shadow-md hover:shadow-lg;
+
+  .apple-button {
+    @apply relative overflow-hidden rounded-xl font-medium transition-all duration-300 ease-out;
+    @apply transform active:scale-95 hover:scale-105;
+    @apply shadow-lg hover:shadow-2xl;
+    backdrop-filter: blur(20px);
   }
   
-  .card-hover {
-    @apply transition-all duration-300 hover:scale-105 hover:shadow-xl cursor-pointer;
+  .apple-button-primary {
+    @apply apple-button bg-gradient-to-br from-[#F97316] via-[#E86305] to-[#D45204];
+    @apply text-white border border-[rgba(255,255,255,0.2)];
+    box-shadow: 0 8px 32px rgba(249, 115, 22, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
   
-  .input-glass {
-    @apply glass px-4 py-2 bg-rpg-secondary/20 text-rpg-light placeholder-rpg-light/50 
-    focus:outline-none focus:ring-2 focus:ring-rpg-gold/50;
+  .apple-button-primary:hover {
+    @apply from-[#E86305] via-[#D45204] to-[#C44103];
+    box-shadow: 0 12px 40px rgba(249, 115, 22, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
   }
+  
+  .apple-button-secondary {
+    @apply apple-button bg-[rgba(45,45,45,0.8)] text-white;
+    @apply border border-[rgba(255,255,255,0.1)];
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .apple-button-secondary:hover {
+    @apply bg-[rgba(60,60,60,0.9)];
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  
+
+  .apple-button::before {
+    content: '';
+    @apply absolute inset-0 opacity-0 transition-opacity duration-300;
+    background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+    transform: translateX(-100%);
+  }
+  
+  .apple-button:hover::before {
+    @apply opacity-100;
+    animation: shimmer 0.6s ease-out;
+  }
+  
+
+  .serif-title {
+    font-family: 'Crimson Text', serif;
+  }
+}
+
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.btn-primary {
+  @apply bg-[#F97316] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#E86305] transition-all duration-300;
+}
+
+.btn-secondary {
+  @apply bg-[#2D2D2D] text-white px-4 py-2 rounded-lg font-medium border border-[rgba(255,255,255,0.1)] hover:bg-[#3D3D3D] transition-all duration-300;
+}
+
+.input-claude {
+  @apply bg-[#2D2D2D] border border-[rgba(255,255,255,0.1)] rounded-lg px-4 py-2 text-white placeholder-[#A0A0A0] focus:outline-none focus:ring-2 focus:ring-[#F97316];
+}
+
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(249, 115, 22, 0.5) rgba(45, 45, 45, 0.3);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(45, 45, 45, 0.3);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(249, 115, 22, 0.5);
+  border-radius: 4px;
 }

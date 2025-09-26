@@ -8,31 +8,23 @@ export default {
   theme: {
     extend: {
       colors: {
-        'rpg-primary': '#2a2438',
-        'rpg-secondary': '#352f44',
-        'rpg-accent': '#5c5470',
-        'rpg-light': '#dbd8e3',
-        'rpg-gold': '#ffd700',
-        'rpg-silver': '#c0c0c0',
-        'rpg-bronze': '#cd7f32',
+        'claude-bg': '#1A1A1A',
+        'claude-card': '#2D2D2D',
+        'claude-accent': '#F97316',
+        'claude-text': '#FFFFFF',
+        'claude-text-secondary': '#A0A0A0',
+        // RPG Theme Colors
+        'rpg-dark': '#1A1A1A',
+        'rpg-light': '#FFFFFF',
+        'rpg-accent': '#F97316',
+        'rpg-gold': '#FFD700',
       },
       fontFamily: {
         medieval: ['MedievalSharp', 'cursive'],
-        fantasy: ['Cinzel', 'serif'],
-        body: ['Inter', 'sans-serif'],
-      },
-      backdropBlur: {
-        'xs': '2px',
-      },
-      animation: {
-        'float': 'float 3s ease-in-out infinite',
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-      },
-      keyframes: {
-        float: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-10px)' },
-        }
+        'sf-ui': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        body: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        serif: ['Crimson Text', 'serif'],
+        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
       },
     },
   },
