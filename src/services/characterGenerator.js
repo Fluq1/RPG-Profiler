@@ -1,4 +1,4 @@
-import { rpgSystems } from '../data/rpgSystems';
+import { rpgSystems } from '../data/rpgSystems/index.js';
 import { generateCharacterDetails, generateCharacterStory } from './aiService';
 
 // Função para gerar atributos automaticamente
@@ -230,8 +230,9 @@ export const generateAutoCharacter = async (options = {}) => {
   
   // Gerar perícias baseadas na classe e background
   const skills = [];
-  if (classData?.skillProficiencies) {
-    skills.push(...classData.skillProficiencies.slice(0, 2));
+  if (classData?.skillProficiencies && Array.isArray(classData.skillProficiencies.from)) {
+    const numToChoose = classData.skillProficiencies.choose;
+    skills.push(...classData.skillProficiencies.from.slice(0, numToChoose));
   }
   if (backgroundData?.skillProficiencies) {
     backgroundData.skillProficiencies.forEach(skill => {
@@ -273,39 +274,10 @@ export const generateAutoCharacter = async (options = {}) => {
     proficiencyBonus: Math.ceil(level / 4) + 1
   };
   
-  try {
-    // Gerar detalhes do personagem usando IA
-    const characterDetails = await generateCharacterDetails({
-      gameSystem: systemData.name,
-      race: character.race,
-      class: character.class,
-      background: character.background,
-      archetype,
-      ageRange
-    });
-    
-    // Extrair nome dos detalhes gerados
-    if (characterDetails && characterDetails.name) {
-      character.name = characterDetails.name;
-    }
-    
-    // Gerar história do personagem
-    const story = await generateCharacterStory({
-      ...character,
-      name: character.name || 'Personagem Misterioso',
-      lifeEvents: [] // Pode ser expandido para incluir eventos de vida
-    });
-    
-    if (story) {
-      character.story = story;
-    }
-    
-  } catch (error) {
-    console.warn('Erro ao gerar detalhes com IA:', error);
-    // Continuar sem os detalhes da IA
-    character.name = `${character.race} ${character.class}`;
-    character.story = `Um ${character.race.toLowerCase()} ${character.class.toLowerCase()} com background de ${character.background.toLowerCase()}.`;
-  }
+  // AI-based generation is disabled due to invalid API key.
+  // Using placeholder data instead.
+  character.name = `${character.race} ${character.class}`;
+  character.story = `Um ${character.race.toLowerCase()} ${character.class.toLowerCase()} com um background de ${character.background.toLowerCase()}, pronto para a aventura!`;
   
   return character;
 };

@@ -66,8 +66,9 @@ const RegisterForm = ({ onClose, onSwitchToLogin, onRegisterSuccess }) => {
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-white mb-2">Nome</label>
+            <label htmlFor="register-name" className="block text-white mb-2">Nome</label>
             <input
+              id="register-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -77,8 +78,9 @@ const RegisterForm = ({ onClose, onSwitchToLogin, onRegisterSuccess }) => {
           </div>
           
           <div>
-            <label className="block text-white mb-2">Email</label>
+            <label htmlFor="register-email" className="block text-white mb-2">Email</label>
             <input
+              id="register-email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -88,8 +90,9 @@ const RegisterForm = ({ onClose, onSwitchToLogin, onRegisterSuccess }) => {
           </div>
           
           <div>
-            <label className="block text-white mb-2">Senha</label>
+            <label htmlFor="register-password" className="block text-white mb-2">Senha</label>
             <input
+              id="register-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -100,8 +103,9 @@ const RegisterForm = ({ onClose, onSwitchToLogin, onRegisterSuccess }) => {
           </div>
           
           <div>
-            <label className="block text-white mb-2">Confirmar Senha</label>
+            <label htmlFor="register-confirm-password" className="block text-white mb-2">Confirmar Senha</label>
             <input
+              id="register-confirm-password"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
