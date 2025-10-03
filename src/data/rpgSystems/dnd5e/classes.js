@@ -50,7 +50,63 @@ const classes = [
       { level: 1, name: 'Inspiração de Bardo', description: 'Pode inspirar aliados com palavras' }
     ]
   },
-  {    id: 'cleric',    name: 'Clérigo',    description: 'Um campeão divino que empunha magia divina a serviço de um poder superior.',    hitDie: 8,    primaryAbility: ['Sabedoria'],    savingThrowProficiencies: ['Sabedoria', 'Carisma'],    skillProficiencies: {      choose: 2,      from: ['História', 'Intuição', 'Medicina', 'Persuasão', 'Religião']    },    armorProficiencies: ['Armaduras leves', 'Armaduras médias', 'Escudos'],    weaponProficiencies: ['Armas simples'],    equipment: {      armor: 'Cota de malha',      weapons: ['Maça', 'Escudo'],      gear: ['Kit de sacerdote', 'Símbolo sagrado']    },    spellcasting: {      ability: 'Sabedoria',      cantripsKnown: { 1: 3, 4: 4, 10: 5 },      spellSlots: { 1: [2], 2: [3], 3: [4, 2] }    },    features: [      { level: 1, name: 'Conjuração', description: 'Pode conjurar magias divinas' },      { level: 1, name: 'Domínio Divino', description: 'Escolhe um domínio divino' }    ],    subclasses: [      {        id: 'life',        name: 'Domínio da Vida',        description: 'Foca em cura e proteção dos vivos.',        features: [          { level: 1, name: 'Magias de Domínio', description: 'Ganha magias extras de cura' },          { level: 1, name: 'Discípulo da Vida', description: 'Magias de cura restauram pontos de vida extras' }        ]      },      {        id: 'war',        name: 'Domínio da Guerra',        description: 'Combina fé com proweza marcial.',        features: [          { level: 1, name: 'Magias de Domínio', description: 'Ganha magias extras de combate' },          { level: 1, name: 'Sacerdote da Guerra', description: 'Pode fazer ataques bônus com armas' }        ]      },      {        id: 'light',        name: 'Domínio da Luz',        description: 'Canaliza o poder da luz divina.',        features: [          { level: 1, name: 'Magias de Domínio', description: 'Ganha magias extras de luz e fogo' },          { level: 1, name: 'Chama Protetora', description: 'Pode criar uma chama que protege aliados' }        ]      }    ]  },
+  {
+    id: 'cleric',
+    name: 'Clérigo',
+    description: 'Um campeão divino que empunha magia divina a serviço de um poder superior.',
+    hitDie: 8,
+    primaryAbility: ['Sabedoria'],
+    savingThrowProficiencies: ['Sabedoria', 'Carisma'],
+    skillProficiencies: {
+      choose: 2,
+      from: ['História', 'Intuição', 'Medicina', 'Persuasão', 'Religião']
+    },
+    armorProficiencies: ['Armaduras leves', 'Armaduras médias', 'Escudos'],
+    weaponProficiencies: ['Armas simples'],
+    equipment: {
+      armor: 'Cota de malha',
+      weapons: ['Maça', 'Escudo'],
+      gear: ['Kit de sacerdote', 'Símbolo sagrado']
+    },
+    spellcasting: {
+      ability: 'Sabedoria',
+      cantripsKnown: { 1: 3, 4: 4, 10: 5 },
+      spellSlots: { 1: [2], 2: [3], 3: [4, 2] }
+    },
+    features: [
+      { level: 1, name: 'Conjuração', description: 'Pode conjurar magias divinas' },
+      { level: 1, name: 'Domínio Divino', description: 'Escolhe um domínio divino' }
+    ],
+    subclasses: [
+      {
+        id: 'life',
+        name: 'Domínio da Vida',
+        description: 'Foca em cura e proteção dos vivos.',
+        features: [
+          { level: 1, name: 'Magias de Domínio', description: 'Ganha magias extras de cura' },
+          { level: 1, name: 'Discípulo da Vida', description: 'Magias de cura restauram pontos de vida extras' }
+        ]
+      },
+      {
+        id: 'war',
+        name: 'Domínio da Guerra',
+        description: 'Combina fé com proweza marcial.',
+        features: [
+          { level: 1, name: 'Magias de Domínio', description: 'Ganha magias extras de combate' },
+          { level: 1, name: 'Sacerdote da Guerra', description: 'Pode fazer ataques bônus com armas' }
+        ]
+      },
+      {
+        id: 'light',
+        name: 'Domínio da Luz',
+        description: 'Canaliza o poder da luz divina.',
+        features: [
+          { level: 1, name: 'Magias de Domínio', description: 'Ganha magias extras de luz e fogo' },
+          { level: 1, name: 'Chama Protetora', description: 'Pode criar uma chama que protege aliados' }
+        ]
+      }
+    ]
+  },
   {
     id: 'druid',
     name: 'Druida',
@@ -79,7 +135,58 @@ const classes = [
       { level: 1, name: 'Conjuração', description: 'Pode conjurar magias de druida' }
     ]
   },
-  {    id: 'fighter',    name: 'Guerreiro',    description: 'Um mestre do combate marcial, habilidoso com uma variedade de armas e armaduras.',    hitDie: 10,    primaryAbility: ['Força', 'Destreza'],    savingThrowProficiencies: ['Força', 'Constituição'],    skillProficiencies: {      choose: 2,      from: ['Acrobacia', 'Adestrar Animais', 'Atletismo', 'História', 'Intuição', 'Intimidação', 'Percepção', 'Sobrevivência']    },    armorProficiencies: ['Todas as armaduras', 'Escudos'],    weaponProficiencies: ['Armas simples', 'Armas marciais'],    equipment: {      armor: 'Cota de malha',      weapons: ['Espada longa', 'Escudo'],      gear: ['Kit de explorador', 'Besta leve com 20 virotes']    },    features: [      { level: 1, name: 'Estilo de Luta', description: 'Escolhe uma especialização em combate' },      { level: 1, name: 'Recuperação', description: 'Pode recuperar o fôlego em combate' }    ],    subclasses: [      {        id: 'champion',        name: 'Campeão',        description: 'Foca na excelência física e combate direto.',        features: [          { level: 3, name: 'Crítico Aprimorado', description: 'Acerta críticos em 19-20' },          { level: 7, name: 'Atleta Notável', description: 'Adiciona metade do bônus de proficiência em testes de Força, Destreza e Constituição' }        ]      },      {        id: 'battlemaster',        name: 'Mestre de Batalha',        description: 'Usa manobras táticas para dominar o campo de batalha.',        features: [          { level: 3, name: 'Manobras de Combate', description: 'Aprende manobras especiais de combate' },          { level: 3, name: 'Dados de Superioridade', description: 'Ganha dados especiais para usar com manobras' }        ]      },      {        id: 'eldritchknight',        name: 'Cavaleiro Arcano',        description: 'Combina magia arcana com habilidades marciais.',        features: [          { level: 3, name: 'Conjuração', description: 'Aprende a conjurar magias de mago' },          { level: 3, name: 'Vínculo com Arma', description: 'Pode invocar uma arma vinculada' }        ]      }    ]  },
+  {
+    id: 'fighter',
+    name: 'Guerreiro',
+    description: 'Um mestre do combate marcial, habilidoso com uma variedade de armas e armaduras.',
+    hitDie: 10,
+    primaryAbility: ['Força', 'Destreza'],
+    savingThrowProficiencies: ['Força', 'Constituição'],
+    skillProficiencies: {
+      choose: 2,
+      from: ['Acrobacia', 'Adestrar Animais', 'Atletismo', 'História', 'Intuição', 'Intimidação', 'Percepção', 'Sobrevivência']
+    },
+    armorProficiencies: ['Todas as armaduras', 'Escudos'],
+    weaponProficiencies: ['Armas simples', 'Armas marciais'],
+    equipment: {
+      armor: 'Cota de malha',
+      weapons: ['Espada longa', 'Escudo'],
+      gear: ['Kit de explorador', 'Besta leve com 20 virotes']
+    },
+    features: [
+      { level: 1, name: 'Estilo de Luta', description: 'Escolhe uma especialização em combate' },
+      { level: 1, name: 'Recuperação', description: 'Pode recuperar o fôlego em combate' }
+    ],
+    subclasses: [
+      {
+        id: 'champion',
+        name: 'Campeão',
+        description: 'Foca na excelência física e combate direto.',
+        features: [
+          { level: 3, name: 'Crítico Aprimorado', description: 'Acerta críticos em 19-20' },
+          { level: 7, name: 'Atleta Notável', description: 'Adiciona metade do bônus de proficiência em testes de Força, Destreza e Constituição' }
+        ]
+      },
+      {
+        id: 'battlemaster',
+        name: 'Mestre de Batalha',
+        description: 'Usa manobras táticas para dominar o campo de batalha.',
+        features: [
+          { level: 3, name: 'Manobras de Combate', description: 'Aprende manobras especiais de combate' },
+          { level: 3, name: 'Dados de Superioridade', description: 'Ganha dados especiais para usar com manobras' }
+        ]
+      },
+      {
+        id: 'eldritchknight',
+        name: 'Cavaleiro Arcano',
+        description: 'Combina magia arcana com habilidades marciais.',
+        features: [
+          { level: 3, name: 'Conjuração', description: 'Aprende a conjurar magias de mago' },
+          { level: 3, name: 'Vínculo com Arma', description: 'Pode invocar uma arma vinculada' }
+        ]
+      }
+    ]
+  },
   {
     id: 'monk',
     name: 'Monge',
@@ -240,7 +347,65 @@ const classes = [
       { level: 1, name: 'Magia de Pacto', description: 'Conjura magias usando espaços de magia de pacto' }
     ]
   },
-  {    id: 'wizard',    name: 'Mago',    description: 'Um usuário de magia erudito capaz de manipular as estruturas da realidade.',    hitDie: 6,    primaryAbility: ['Inteligência'],    savingThrowProficiencies: ['Inteligência', 'Sabedoria'],    skillProficiencies: {      choose: 2,      from: ['Arcanismo', 'História', 'Intuição', 'Investigação', 'Medicina', 'Religião']    },    armorProficiencies: [],    weaponProficiencies: ['Adagas', 'Dardos', 'Fundas', 'Bordões', 'Bestas leves'],    equipment: {      armor: 'Nenhuma',      weapons: ['Bordão', 'Adaga'],      gear: ['Kit de erudito', 'Livro de magias', 'Foco arcano']    },    spellcasting: {      ability: 'Inteligência',      cantripsKnown: { 1: 3, 4: 4, 10: 5 },      spellSlots: { 1: [2], 2: [3], 3: [4, 2], 4: [4, 3], 5: [4, 3, 2] },      ritualCasting: true,      spellbook: true    },    features: [      { level: 1, name: 'Conjuração', description: 'Pode conjurar magias de mago' },      { level: 1, name: 'Recuperação Arcana', description: 'Pode recuperar espaços de magia uma vez por dia' }    ],    subclasses: [      {        id: 'evocation',        name: 'Escola de Evocação',        description: 'Especializa-se em magias de dano e energia.',        features: [          { level: 2, name: 'Esculpir Magias', description: 'Pode proteger aliados de suas magias de área' },          { level: 6, name: 'Truque Potente', description: 'Truques de dano ignoram resistências' }        ]      },      {        id: 'abjuration',        name: 'Escola de Abjuração',        description: 'Foca em proteção e banimento.',        features: [          { level: 2, name: 'Proteção Arcana', description: 'Cria uma barreira mágica protetora' },          { level: 6, name: 'Proteção Projetada', description: 'Pode usar sua proteção para defender aliados' }        ]      },      {        id: 'divination',        name: 'Escola de Divinação',        description: 'Especializa-se em prever e alterar o destino.',        features: [          { level: 2, name: 'Presságio', description: 'Pode substituir rolagens de dados' },          { level: 6, name: 'Especialista em Presságio', description: 'Recupera usos de presságio mais rapidamente' }        ]      }    ]  }
+  {
+    id: 'wizard',
+    name: 'Mago',
+    description: 'Um usuário de magia erudito capaz de manipular as estruturas da realidade.',
+    hitDie: 6,
+    primaryAbility: ['Inteligência'],
+    savingThrowProficiencies: ['Inteligência', 'Sabedoria'],
+    skillProficiencies: {
+      choose: 2,
+      from: ['Arcanismo', 'História', 'Intuição', 'Investigação', 'Medicina', 'Religião']
+    },
+    armorProficiencies: [],
+    weaponProficiencies: ['Adagas', 'Dardos', 'Fundas', 'Bordões', 'Bestas leves'],
+    equipment: {
+      armor: 'Nenhuma',
+      weapons: ['Bordão', 'Adaga'],
+      gear: ['Kit de erudito', 'Livro de magias', 'Foco arcano']
+    },
+    spellcasting: {
+      ability: 'Inteligência',
+      cantripsKnown: { 1: 3, 4: 4, 10: 5 },
+      spellSlots: { 1: [2], 2: [3], 3: [4, 2], 4: [4, 3], 5: [4, 3, 2] },
+      ritualCasting: true,
+      spellbook: true
+    },
+    features: [
+      { level: 1, name: 'Conjuração', description: 'Pode conjurar magias de mago' },
+      { level: 1, name: 'Recuperação Arcana', description: 'Pode recuperar espaços de magia uma vez por dia' }
+    ],
+    subclasses: [
+      {
+        id: 'evocation',
+        name: 'Escola de Evocação',
+        description: 'Especializa-se em magias de dano e energia.',
+        features: [
+          { level: 2, name: 'Esculpir Magias', description: 'Pode proteger aliados de suas magias de área' },
+          { level: 6, name: 'Truque Potente', description: 'Truques de dano ignoram resistências' }
+        ]
+      },
+      {
+        id: 'abjuration',
+        name: 'Escola de Abjuração',
+        description: 'Foca em proteção e banimento.',
+        features: [
+          { level: 2, name: 'Proteção Arcana', description: 'Cria uma barreira mágica protetora' },
+          { level: 6, name: 'Proteção Projetada', description: 'Pode usar sua proteção para defender aliados' }
+        ]
+      },
+      {
+        id: 'divination',
+        name: 'Escola de Divinação',
+        description: 'Especializa-se em prever e alterar o destino.',
+        features: [
+          { level: 2, name: 'Presságio', description: 'Pode substituir rolagens de dados' },
+          { level: 6, name: 'Especialista em Presságio', description: 'Recupera usos de presságio mais rapidamente' }
+        ]
+      }
+    ]
+  }
 ];
 
 export default classes;

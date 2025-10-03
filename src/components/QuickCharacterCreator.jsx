@@ -1,8 +1,24 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { generateAutoCharacter, generateMultipleCharacters, validateCharacter } from '../services/characterGenerator';
 import { generateCharacterPDF } from '../services/pdfService';
-import { rpgSystems } from '../data/rpgSystems';
+import { rpgSystems } from '../data/rpgSystems/index.js';
 import './QuickCharacterCreator.css';
+
+// Custom hook for responsive design
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
+    const listener = () => setMatches(media.matches);
+    window.addEventListener('resize', listener);
+    return () => window.removeEventListener('resize', listener);
+  }, [matches, query]);
+  return matches;
+};
 
 const QuickCharacterCreator = () => {
   const [options, setOptions] = useState({
@@ -19,10 +35,10 @@ const QuickCharacterCreator = () => {
   
   const [generatedCharacters, setGeneratedCharacters] = useState([]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [selectedCharacter, setSelectedCharacter] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const [selectedCard, setSelectedCard] = useState(null);
   const [systemData, setSystemData] = useState(null);
-  
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
   useEffect(() => {
     setSystemData(rpgSystems[options.gameSystem]);
   }, [options.gameSystem]);
@@ -33,23 +49,19 @@ const QuickCharacterCreator = () => {
   
   const generateCharacters = async () => {
     setIsGenerating(true);
+    setGeneratedCharacters([]); // Clear previous results
     try {
-      let characters;
-      if (options.count === 1) {
-        const character = await generateAutoCharacter(options);
-        characters = [character];
-      } else {
-        characters = await generateMultipleCharacters(options.count, options);
-      }
+      const characters = options.count === 1
+        ? [await generateAutoCharacter(options)]
+        : await generateMultipleCharacters(options.count, options);
       
       setGeneratedCharacters(characters);
-      if (characters.length > 0) {
-        setSelectedCharacter(characters[0]);
-        setShowPreview(true);
-      }
     } catch (error) {
-      console.error('Erro ao gerar personagens:', error);
-      alert('Erro ao gerar personagens. Tente novamente.');
+      console.error('#################### ERRO DETALHADO ####################');
+      console.error('Ocorreu um erro crítico durante a geração de personagens:', error);
+      console.error('######################################################');
+      // A linha do alert foi comentada para não bloquear o script de teste.
+      // alert('Erro ao gerar personagens. Verifique o console para detalhes.');
     } finally {
       setIsGenerating(false);
     }
@@ -61,294 +73,160 @@ const QuickCharacterCreator = () => {
       alert(`Personagem inválido: ${validation.errors.join(', ')}`);
       return;
     }
-    
     generateCharacterPDF(character);
   };
-  
+
   const downloadAllPDFs = () => {
-    generatedCharacters.forEach((character, index) => {
-      setTimeout(() => {
-        downloadPDF(character);
-      }, index * 1000); // Delay para evitar conflitos
-    });
+    generatedCharacters.forEach((char, i) => setTimeout(() => downloadPDF(char), i * 1000));
   };
-  
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: (i) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+      },
+    }),
+  };
+
   return (
-    <div className="quick-character-creator">
-      <div className="creator-header">
-        <h2>🎲 Criação Rápida de Personagem</h2>
-        <p>Gere personagens automaticamente com base nas regras do sistema selecionado</p>
-      </div>
-      
-      <div className="creator-content">
-        <div className="options-panel">
-          <h3>Opções de Geração</h3>
-          
-          {/* Sistema de RPG */}
-          <div className="option-group">
-            <label>Sistema de RPG:</label>
-            <select 
-              value={options.gameSystem} 
-              onChange={(e) => handleOptionChange('gameSystem', e.target.value)}
-            >
-              {Object.entries(rpgSystems).map(([key, system]) => (
-                <option key={key} value={key}>{system.name}</option>
-              ))}
+    <div className="qcc-container">
+      <header className="qcc-header">
+        <h1>🎲 Criação Rápida de Personagem</h1>
+        <p>Gere personagens completos com apenas alguns cliques.</p>
+      </header>
+
+      <motion.div layout className="qcc-options-card">
+        <div className="qcc-options-grid">
+          {/* System */}
+          <div className="qcc-option">
+            <label>Sistema de RPG</label>
+            <select value={options.gameSystem} onChange={(e) => handleOptionChange('gameSystem', e.target.value)}>
+              {Object.entries(rpgSystems).map(([key, sys]) => <option key={key} value={key}>{sys.name}</option>)}
             </select>
           </div>
-          
-          {/* Quantidade */}
-          <div className="option-group">
-            <label>Quantidade de Personagens:</label>
-            <select 
-              value={options.count} 
-              onChange={(e) => handleOptionChange('count', parseInt(e.target.value))}
-            >
-              <option value={1}>1 Personagem</option>
-              <option value={3}>3 Personagens</option>
-              <option value={5}>5 Personagens</option>
-              <option value={10}>10 Personagens</option>
+          {/* Count */}
+          <div className="qcc-option">
+            <label>Quantidade</label>
+            <select value={options.count} onChange={(e) => handleOptionChange('count', parseInt(e.target.value))}>
+              {[1, 3, 5, 10].map(c => <option key={c} value={c}>{c} Personagen{c > 1 ? 's' : 'm'}</option>)}
             </select>
           </div>
-          
-          {/* Nível */}
-          <div className="option-group">
-            <label>Nível:</label>
-            <select 
-              value={options.level} 
-              onChange={(e) => handleOptionChange('level', parseInt(e.target.value))}
-            >
-              {Array.from({ length: 20 }, (_, i) => i + 1).map(level => (
-                <option key={level} value={level}>Nível {level}</option>
-              ))}
+          {/* Level */}
+          <div className="qcc-option">
+            <label>Nível</label>
+            <select value={options.level} onChange={(e) => handleOptionChange('level', parseInt(e.target.value))}>
+              {Array.from({ length: 20 }, (_, i) => i + 1).map(l => <option key={l} value={l}>Nível {l}</option>)}
             </select>
           </div>
-          
-          {/* Método de Atributos */}
-          <div className="option-group">
-            <label>Método de Atributos:</label>
-            <select 
-              value={options.abilityMethod} 
-              onChange={(e) => handleOptionChange('abilityMethod', e.target.value)}
-            >
-              <option value="standardArray">Matriz Padrão</option>
-              <option value="pointBuy">Compra de Pontos</option>
-              <option value="rolling">Rolagem de Dados</option>
+          {/* Race */}
+          <div className="qcc-option">
+            <label>Raça (Opcional)</label>
+            <select value={options.race} onChange={(e) => handleOptionChange('race', e.target.value)}>
+              <option value="">Aleatória</option>
+              {systemData?.races.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
             </select>
           </div>
-          
-          {/* Faixa Etária */}
-          <div className="option-group">
-            <label>Faixa Etária:</label>
-            <select 
-              value={options.ageRange} 
-              onChange={(e) => handleOptionChange('ageRange', e.target.value)}
-            >
-              <option value="child">Criança</option>
-              <option value="young">Jovem</option>
-              <option value="adult">Adulto</option>
-              <option value="elder">Idoso</option>
+          {/* Class */}
+          <div className="qcc-option">
+            <label>Classe (Opcional)</label>
+            <select value={options.characterClass} onChange={(e) => handleOptionChange('characterClass', e.target.value)}>
+              <option value="">Aleatória</option>
+              {systemData?.classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
-          
-          {systemData && (
-            <>
-              {/* Raça (Opcional) */}
-              <div className="option-group">
-                <label>Raça (Opcional):</label>
-                <select 
-                  value={options.race} 
-                  onChange={(e) => handleOptionChange('race', e.target.value)}
-                >
-                  <option value="">Aleatória</option>
-                  {systemData.races.map(race => (
-                    <option key={race.id} value={race.id}>{race.name}</option>
-                  ))}
-                </select>
-              </div>
-              
-              {/* Classe (Opcional) */}
-              <div className="option-group">
-                <label>Classe (Opcional):</label>
-                <select 
-                  value={options.characterClass} 
-                  onChange={(e) => handleOptionChange('characterClass', e.target.value)}
-                >
-                  <option value="">Aleatória</option>
-                  {systemData.classes.map(cls => (
-                    <option key={cls.id} value={cls.id}>{cls.name}</option>
-                  ))}
-                </select>
-              </div>
-              
-              {/* Background (Opcional) */}
-              <div className="option-group">
-                <label>Background (Opcional):</label>
-                <select 
-                  value={options.background} 
-                  onChange={(e) => handleOptionChange('background', e.target.value)}
-                >
-                  <option value="">Aleatório</option>
-                  {systemData.backgrounds.map(bg => (
-                    <option key={bg.id} value={bg.id}>{bg.name}</option>
-                  ))}
-                </select>
-              </div>
-            </>
-          )}
-          
-          <button 
-            className="generate-btn" 
-            onClick={generateCharacters}
-            disabled={isGenerating}
-          >
-            {isGenerating ? '🎲 Gerando...' : '🎲 Gerar Personagens'}
-          </button>
+          {/* Background */}
+          <div className="qcc-option">
+            <label>Background (Opcional)</label>
+            <select value={options.background} onChange={(e) => handleOptionChange('background', e.target.value)}>
+              <option value="">Aleatório</option>
+              {systemData?.backgrounds.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
+            </select>
+          </div>
         </div>
-        
-        {generatedCharacters.length > 0 && (
-          <div className="results-panel">
-            <div className="results-header">
-              <h3>Personagens Gerados ({generatedCharacters.length})</h3>
-              {generatedCharacters.length > 1 && (
-                <button className="download-all-btn" onClick={downloadAllPDFs}>
-                  📄 Baixar Todos os PDFs
-                </button>
-              )}
-            </div>
-            
-            <div className="character-list">
-              {generatedCharacters.map((character, index) => (
-                <div 
-                  key={index} 
-                  className={`character-card ${selectedCharacter === character ? 'selected' : ''}`}
-                  onClick={() => setSelectedCharacter(character)}
+        <button className="qcc-generate-btn" onClick={generateCharacters} disabled={isGenerating}>
+          {isGenerating ? 'Gerando...' : 'Gerar Personagens'}
+        </button>
+      </motion.div>
+
+      {generatedCharacters.length > 0 && (
+        <div className="qcc-results-section">
+          <div className="qcc-results-header">
+            <h2>Resultados da Geração</h2>
+            <button className="qcc-download-all-btn" onClick={downloadAllPDFs}>
+              Baixar Todos os PDFs
+            </button>
+          </div>
+          <motion.div className="qcc-character-grid" layout>
+            <AnimatePresence>
+              {generatedCharacters.map((char, index) => (
+                <motion.div
+                  key={char.id || index}
+                  className="qcc-character-card"
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  custom={index}
+                  layoutId={`card-${char.id || index}`}
+                  onClick={() => setSelectedCard(selectedCard === index ? null : index)}
                 >
-                  <div className="character-header">
-                    <h4>{character.name || `Personagem ${index + 1}`}</h4>
-                    <span className="character-level">Nível {character.level}</span>
-                  </div>
-                  <div className="character-info">
-                    <p><strong>Raça:</strong> {character.race}</p>
-                    <p><strong>Classe:</strong> {character.class}</p>
-                    <p><strong>Background:</strong> {character.background}</p>
-                  </div>
-                  <div className="character-actions">
-                    <button 
-                      className="pdf-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        downloadPDF(character);
-                      }}
-                    >
-                      📄 PDF
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        
-        {selectedCharacter && showPreview && (
-          <div className="preview-panel">
-            <div className="preview-header">
-              <h3>Preview: {selectedCharacter.name}</h3>
-              <button 
-                className="close-preview"
-                onClick={() => setShowPreview(false)}
-              >
-                ✕
-              </button>
-            </div>
-            
-            <div className="preview-content">
-              <div className="basic-info">
-                <h4>Informações Básicas</h4>
-                <div className="info-grid">
-                  <div><strong>Nome:</strong> {selectedCharacter.name}</div>
-                  <div><strong>Nível:</strong> {selectedCharacter.level}</div>
-                  <div><strong>Raça:</strong> {selectedCharacter.race}</div>
-                  <div><strong>Classe:</strong> {selectedCharacter.class}</div>
-                  <div><strong>Background:</strong> {selectedCharacter.background}</div>
-                  <div><strong>PV:</strong> {selectedCharacter.hitPoints}</div>
-                  <div><strong>CA:</strong> {selectedCharacter.armorClass}</div>
-                  <div><strong>Bônus Prof.:</strong> +{selectedCharacter.proficiencyBonus}</div>
-                </div>
-              </div>
-              
-              {selectedCharacter.abilities && (
-                <div className="abilities-section">
-                  <h4>Atributos</h4>
-                  <div className="abilities-grid">
-                    {Object.entries(selectedCharacter.abilities).map(([ability, value]) => {
-                      const modifier = Math.floor((value - 10) / 2);
-                      return (
-                        <div key={ability} className="ability-score">
-                          <div className="ability-name">{ability.charAt(0).toUpperCase() + ability.slice(1)}</div>
-                          <div className="ability-value">{value}</div>
-                          <div className="ability-modifier">
-                            {modifier >= 0 ? '+' : ''}{modifier}
-                          </div>
+                  <motion.div className="qcc-card-header" layout>
+                    <h3>{char.name}</h3>
+                    <span className="qcc-level-badge">Nível {char.level}</span>
+                  </motion.div>
+                  <motion.div className="qcc-card-subtitle" layout>
+                    {char.race} {char.class}
+                  </motion.div>
+
+                  <AnimatePresence>
+                    {selectedCard === index && (
+                      <motion.div
+                        className="qcc-card-details"
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <div className="qcc-abilities-grid">
+                          {Object.entries(char.abilities).map(([key, value]) => (
+                            <div key={key} className="qcc-ability">
+                              <span className="qcc-ability-name">{key.substring(0, 3).toUpperCase()}</span>
+                              <span className="qcc-ability-value">{value}</span>
+                              <span className="qcc-ability-mod">
+                                {Math.floor((value - 10) / 2) >= 0 ? `+${Math.floor((value - 10) / 2)}` : Math.floor((value - 10) / 2)}
+                              </span>
+                            </div>
+                          ))}
                         </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-              
-              {selectedCharacter.skills && selectedCharacter.skills.length > 0 && (
-                <div className="skills-section">
-                  <h4>Perícias Proficientes</h4>
-                  <div className="skills-list">
-                    {selectedCharacter.skills.map((skill, index) => (
-                      <span key={index} className="skill-tag">{skill}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {selectedCharacter.equipment && selectedCharacter.equipment.length > 0 && (
-                <div className="equipment-section">
-                  <h4>Equipamentos</h4>
-                  <div className="equipment-list">
-                    {selectedCharacter.equipment.slice(0, 10).map((item, index) => (
-                      <div key={index} className="equipment-item">• {item}</div>
-                    ))}
-                    {selectedCharacter.equipment.length > 10 && (
-                      <div className="equipment-more">... e mais {selectedCharacter.equipment.length - 10} itens</div>
+                        <div className="qcc-details-section">
+                          <strong>Perícias:</strong>
+                          <span>{char.skills.join(', ')}</span>
+                        </div>
+                        <div className="qcc-details-section">
+                          <strong>Equipamento:</strong>
+                          <span>{char.equipment.slice(0, 3).join(', ')}...</span>
+                        </div>
+                      </motion.div>
                     )}
-                  </div>
-                </div>
-              )}
-              
-              {selectedCharacter.spells && selectedCharacter.spells.length > 0 && (
-                <div className="spells-section">
-                  <h4>Magias</h4>
-                  <div className="spells-list">
-                    {selectedCharacter.spells.map((spell, index) => (
-                      <div key={index} className="spell-item">
-                        <strong>{spell.name}</strong> (Nível {spell.level === 0 ? 'Truque' : spell.level})
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              {selectedCharacter.story && (
-                <div className="story-section">
-                  <h4>História</h4>
-                  <div className="story-content">
-                    {typeof selectedCharacter.story === 'string' 
-                      ? selectedCharacter.story.substring(0, 300) + '...' 
-                      : 'História não disponível'}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
+                  </AnimatePresence>
+
+                  <motion.button
+                    className="qcc-pdf-btn"
+                    onClick={(e) => { e.stopPropagation(); downloadPDF(char); }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Baixar PDF
+                  </motion.button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 };
